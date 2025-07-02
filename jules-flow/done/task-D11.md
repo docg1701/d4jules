@@ -27,25 +27,37 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
-# outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# outcome: success
+# outcome_reason: "Implementação concluída e todos os testes unitários passaram."
+# start_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder, a ser preenchido pela plataforma
+# end_time: YYYY-MM-DDTHH:MM:SSZ # Placeholder, a ser preenchido pela plataforma
+# duration_minutes: 0 # Placeholder, a ser preenchido pela plataforma
 # files_modified:
 #   - d4jules/core/parser.py
+#   - d4jules/tests/test_parser.py
+#   - requirements.txt # Added lxml
 # reference_documents_consulted:
-#   - jules-flow/working-plan.md
-#   - jules-flow/docs/reference/beautifulsoup_research.md
+#   - jules-flow/in_progress/task-D11.md # Task description
+#   - jules-flow/docs/reference/beautifulsoup_research.md # BeautifulSoup usage
+#   - https://docs.python.org/3/library/unittest.html # For test creation
+#   - https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin # For URL normalization
 # execution_details: |
-#   Criado `d4jules/core/parser.py`.
-#   Implementada função `parse_html_content(html_doc, base_url, content_selector, nav_selector, next_page_sel)` que:
-#     - Inicializa `BeautifulSoup`.
-#     - Usa `soup.select_one(content_selector)` para obter o bloco de conteúdo principal.
-#     - Usa `soup.select(nav_selector + " a[href]")` e `soup.select_one(next_page_sel + "[href]")` para encontrar links.
-#     - Usa `urllib.parse.urljoin` para normalizar URLs relativas para absolutas.
-#     - Retorna o HTML do conteúdo (como string) e uma lista de URLs absolutas.
-#   Adicionado tratamento para casos onde seletores não encontram elementos.
+#   1. Criado o arquivo `d4jules/core/parser.py`.
+#   2. Implementada a função `parse_html_content(html_doc: str, base_url: str, content_selector: str, nav_selector: Optional[str], next_page_selector: Optional[str]) -> Tuple[Optional[str], List[str]]`.
+#      - Utiliza `BeautifulSoup` com `lxml` (fallback para `html.parser`).
+#      - Extrai o HTML do conteúdo principal usando `soup.select_one(content_selector)`.
+#      - Extrai links de navegação de `a[href]` dentro do `nav_selector` (se fornecido).
+#      - Extrai o link da próxima página de `a[href]` no/dentro do `next_page_selector` (se fornecido), com lógica refinada para tratar o seletor como link direto ou container.
+#      - Normaliza todas as URLs para absolutas usando `urllib.parse.urljoin`.
+#      - Retorna o HTML do conteúdo e uma lista ordenada e única de URLs.
+#      - Lida com casos onde seletores não encontram elementos, retornando `None` para o conteúdo ou listas vazias de URLs.
+#   3. Adicionado `lxml` ao `requirements.txt` e instalado dependências.
+#   4. Criado o arquivo `d4jules/tests/test_parser.py` com 11 casos de teste abrangendo:
+#      - Extração básica de conteúdo e links.
+#      - Normalização de URLs (absolutas, relativas, diferentes bases).
+#      - Casos de seletores não encontrados ou não fornecidos para conteúdo, navegação e próxima página.
+#      - Tratamento de URLs duplicadas.
+#   5. Executados os testes unitários, todos passaram.
 # ---------------------------------------------------------------
 ---
 

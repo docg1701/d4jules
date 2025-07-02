@@ -2,5 +2,6 @@ langchain
 langchain-google-genai
 google-generativeai
 beautifulsoup4
+lxml
 html2text
 requests
