@@ -65,7 +65,8 @@ fi
 echo "Dependencies installed/updated."
 
 echo "Running d4jules scraper application..."
-python3 d4jules/scraper_cli.py
+python3 -m d4jules.scraper_cli
+# Using -m ensures the package structure is correctly recognized.
 # scraper_cli.py will handle its own exit codes. If it fails, start.sh will still complete.
 # For stricter error handling, check $? after the python3 command.
 

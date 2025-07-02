@@ -13,7 +13,7 @@
 | task-D04     | Desenvolver verificação e criação de .venv em start.sh | development | done | medium | []           | Jules     |
 | task-D05     | Adicionar ativação de venv, git pull e instalação de dependências ao start.sh | development | done | medium | ["task-D03", "task-D04"] | Jules     |
 | task-D06     | Adicionar execução do scraper_cli.py ao start.sh | development | done | medium | ["task-D05"] | Jules     |
-| task-T01     | Testar script start.sh   | test | backlog | medium | ["task-D06"] | Jules     |
+| task-T01     | Testar script start.sh   | test | done | medium | ["task-D06"] | Jules     |
 | task-D07     | Implementar carregamento de config.ini em scraper_cli.py | development | done | high | ["task-D01", "task-D02"] | Jules     |
 | task-D08     | Implementar solicitação de URL ao usuário em scraper_cli.py | development | done | medium | ["task-D07"] | Jules     |
 | task-D09     | Implementar análise de HTML com LLM para extrair seletores | development | done | high | ["task-D07", "task-R01", "task-R02"] | Jules     |
@@ -22,7 +22,7 @@
 | task-D12     | Implementar conversão para Markdown e salvamento de arquivos | development | done | medium | ["task-R04", "task-D01"] | Jules     |
 | task-D13     | Implementar lógica principal de orquestração do crawling | development | done | high | ["task-D09", "task-D10", "task-D11", "task-D12"] | Jules     |
 | task-T02     | Testar funcionalidade completa do scraper_cli.py | test | done | high | ["task-D01", "task-D07", "task-D08", "task-D13"] | Jules     |
-| task-T03     | Testes para a task-D01: Verificação da estrutura de diretórios | test | backlog | medium | ["task-D01"] | Jules     |
+| task-T03     | Testes para a task-D01: Verificação da estrutura de diretórios | test | done | medium | ["task-D01"] | Jules     |
 | task-T04     | Testes para a task-D02: Verificação dos arquivos de configuração | test | backlog | medium | ["task-D02"] | Jules     |
 | task-T05     | Testes para a task-D03: Verificação do arquivo requirements.txt | test | backlog | medium | ["task-D03"] | Jules     |
 | task-T06     | Testes para a task-D07: Carregamento de Configuração | test | done | high | ["task-D07"] | Jules     |
@@ -34,6 +34,6 @@
 | task-T12     | Testes para a task-D10: Gerenciamento de Fila de URLs e Controle de Visitas | test | backlog | medium | ["task-D10"] | Jules     |
 | task-T13     | Testes para a task-D11: Implementar extração de conteúdo e links com BeautifulSoup | test | backlog | medium | ["task-D11"] | Jules     |
 | task-T14     | Testes para a task-D12: Implementar conversão para Markdown e salvamento de arquivos | test | backlog | medium | ["task-D12"] | Jules     |
-| task-T15     | Testes para a task-D13: Implementar lógica principal de orquestração do crawling | test | backlog | high | ["task-D13"] | Jules     |
+| task-T15     | Testes para a task-D13: Implementar lógica principal de orquestração do crawling | test | done | high | ["task-D13"] | Jules     |
 | task-DOC01   | Criar README.md para d4jules | documentation | done | medium | ["task-D02", "task-D06"] | Jules     |
 | task-DOC02   | Adicionar seção de Referências ao README.md | documentation | backlog | low | ["task-DOC01"] | Jules     |
