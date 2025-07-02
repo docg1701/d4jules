@@ -117,5 +117,3 @@ Após a execução, o `scraper_cli.py` (atualmente em desenvolvimento) solicitar
 *   **BeautifulSoup4**: Para parsing de HTML.
 *   **html2text**: Para conversão de HTML para Markdown.
 *   **Requests**: Para requisições HTTP.
-
-(Uma lista mais detalhada de referências será adicionada em `task-DOC02`).
