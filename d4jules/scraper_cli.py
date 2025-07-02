@@ -74,8 +74,43 @@ def main():
     print(f"\nURL to be processed: {target_url}")
 
     # Placeholder for next steps
-    print("\nURL received. Further processing (analysis, scraping) will be implemented in next tasks.")
-    print("----------------------------------------------------")
+    # print("\nURL received. Further processing (analysis, scraping) will be implemented in next tasks.")
+    # print("----------------------------------------------------")
+
+    print("\nInitializing Crawler...")
+    try:
+        # Assuming Crawler class is in d4jules.core.crawler
+        from d4jules.core.crawler import Crawler
+
+        # Extract limits from config, defaulting to None if not specified
+        # The structure config['limits']['max_pages'] is assumed from task D07/D02
+        limits_config = config.get('crawler_limits', {}) # Changed section name to 'crawler_limits' for clarity
+        max_pages = limits_config.getint('max_pages', fallback=None) # Use getint with fallback
+        max_depth = limits_config.getint('max_depth', fallback=None) # Use getint with fallback
+
+        if max_pages is not None: # getint might return 0 if key exists but is empty, treat 0 as unlimited for now or specific handling
+             if max_pages <= 0: max_pages = None # Treat 0 or negative as no limit
+        if max_depth is not None:
+             if max_depth < 0: max_depth = None # Treat negative as no limit (0 means only base_url)
+
+
+        crawler_instance = Crawler(
+            base_url=target_url,
+            config=config, # Pass the whole config object, Crawler can pick what it needs
+            max_pages=max_pages,
+            max_depth=max_depth
+        )
+        crawler_instance.start_crawling()
+
+    except ImportError as e:
+        print(f"Error importing Crawler: {e}. Please ensure d4jules.core.crawler module exists.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred during the crawling process: {e}")
+        # Consider more detailed error logging or specific exception handling here
+        sys.exit(1)
+
+    print("\n--- d4jules scraping process finished ---")
 
 
 if __name__ == "__main__":
