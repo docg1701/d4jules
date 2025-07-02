@@ -1,0 +1,12 @@
+[GOOGLE_AI]
+API_KEY = YOUR_GOOGLE_AI_API_KEY_HERE
+
+[LLM]
+MODEL_NAME = gemini-1.5-flash-latest
+# Example: gemini-1.5-pro, gemini-1.0-pro, etc.
+# Ensure the model selected is compatible with the features used (e.g., tool calling for structured output)
+
+[SCRAPER]
+# Placeholder for future scraper-specific settings, e.g.:
+# MAX_PAGES = 100
+# DEFAULT_OUTPUT_DIR = output/markdown
