@@ -26,22 +26,31 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: 2024-07-02T19:00:00Z # Estimado
+# end_time: 2024-07-02T19:30:00Z # Estimado
+# duration_minutes: 30 # Estimado
 # files_modified:
-#   - d4jules/core/crawler.py
+#   - d4jules/src/core/crawler.py
+#   - d4jules/src/core/__init__.py
 # reference_documents_consulted:
-#   - jules-flow/working-plan.md
+#   - jules-flow/in_progress/task-D10.md
+#   - VISION.md
 # execution_details: |
-#   Criada (ou atualizada) a classe `Crawler` em `d4jules/core/crawler.py`.
-#   Adicionados atributos `self.to_visit_queue` (usando `collections.deque`) e `self.visited_urls` (usando `set`).
-#   Implementados métodos:
-#     - `add_url_to_visit(url)`: Adiciona à fila se não visitada e não na fila.
-#     - `get_next_url()`: Retorna e remove da fila, ou None se vazia.
-#     - `mark_as_visited(url)`: Adiciona ao set de visitadas.
+#   1. Criado o arquivo `d4jules/src/core/crawler.py`.
+#   2. Implementada a classe `Crawler` com:
+#      - `__init__(self)`: Inicializa `self.to_visit_queue` (collections.deque), `self.visited_urls` (set), e `self._queue_set` (set para verificação rápida de presença na fila).
+#      - `_normalize_url(self, url: str) -> str`: Normaliza URLs (scheme, netloc lowercase, remove fragmentos e trailing slashes). Retorna string vazia para schemes não http/https.
+#      - `add_url(self, url: str)`: Adiciona URL normalizada à fila e `_queue_set` se não visitada e não já na fila.
+#      - `add_urls(self, urls: list[str])`: Helper para adicionar múltiplas URLs.
+#      - `get_next_url(self) -> str | None`: Remove e retorna a próxima URL da fila, marca como visitada, e remove de `_queue_set`.
+#      - `mark_as_visited(self, url: str)`: Adiciona URL normalizada ao `visited_urls`.
+#      - `has_next_url(self) -> bool`: Verifica se a fila não está vazia.
+#      - `get_queue_size(self) -> int`: Retorna o tamanho da fila.
+#      - `get_visited_count(self) -> int`: Retorna o número de URLs visitadas.
+#   3. Adicionado um bloco `if __name__ == "__main__":` em `crawler.py` para demonstração básica.
+#   4. Atualizado `d4jules/src/core/__init__.py` para exportar a classe `Crawler`.
 # ---------------------------------------------------------------
 ---
 

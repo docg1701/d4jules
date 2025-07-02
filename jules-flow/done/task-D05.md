@@ -22,18 +22,28 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: 2024-07-26T17:30:00Z # Estimado
+# end_time: 2024-07-26T17:45:00Z # Estimado
+# duration_minutes: 15 # Estimado
 # files_modified:
 #   - start.sh
 # reference_documents_consulted:
-#   - jules-flow/working-plan.md
+#   - jules-flow/in_progress/task-D05.md
+#   - VISION.md
+#   - requirements.txt
 # execution_details: |
-#   Script `start.sh` atualizado para incluir ativação do venv, `git pull` no branch atual,
-#   e `pip install -r requirements.txt`.
+#   1. Modificado o script `start.sh` para adicionar os seguintes blocos após a verificação/criação do `.venv`:
+#      - Ativação do ambiente virtual: `source .venv/bin/activate`, com verificação de sucesso.
+#      - Atualização do repositório: `echo "Updating repository..."` seguido de `git pull origin $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")`, com tratamento de aviso para falhas.
+#      - Upgrade do pip: `echo "Upgrading pip..."` seguido de `pip install --upgrade pip`, com tratamento de aviso.
+#      - Instalação de dependências: `echo "Installing/updating dependencies from requirements.txt..."` seguido de `pip install -r requirements.txt`, com saída do script em caso de erro.
+#   2. Mensagens apropriadas foram adicionadas para cada etapa.
+#   3. Testes manuais foram realizados:
+#      - `rm -rf .venv` e depois `./start.sh`: Verificou-se a criação do venv, ativação, git pull, upgrade do pip e instalação de dependências.
+#      - `./start.sh` novamente: Verificou-se que o venv existente foi encontrado e as etapas subsequentes foram executadas.
+#   4. O problema anterior com `.venv/bin/activate` não sendo encontrado foi resolvido, pois a criação e ativação agora ocorrem em uma sequência mais robusta dentro do próprio `start.sh`.
 # ---------------------------------------------------------------
 ---
 

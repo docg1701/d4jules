@@ -1,0 +1,32 @@
+# Python virtual environment
+.venv/
+.venv_test/
+
+# Pycache files
+__pycache__/
+*.py[cod]
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Test output and coverage
+htmlcov/
+.coverage
+.pytest_cache/
+tests/temp_config_files/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+d4jules/logs/ # If logs are stored here and not meant to be versioned
+
+# Config files that might contain secrets
+d4jules/config/config.ini # Already handled by d4jules/config/.gitignore but good to have here too for clarity
+```
