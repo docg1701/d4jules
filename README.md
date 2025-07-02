@@ -119,4 +119,3 @@ Após a execução, o `scraper_cli.py` (atualmente em desenvolvimento) solicitar
 *   **Requests**: Para requisições HTTP.
 
 (Uma lista mais detalhada de referências será adicionada em `task-DOC02`).
-```
