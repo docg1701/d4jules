@@ -74,8 +74,46 @@ def main():
     print(f"\nURL to be processed: {target_url}")
 
     # Placeholder for next steps
-    print("\nURL received. Further processing (analysis, scraping) will be implemented in next tasks.")
-    print("----------------------------------------------------")
+    # print("\nURL received. Further processing (analysis, scraping) will be implemented in next tasks.")
+    # print("----------------------------------------------------")
+
+    print("\nInitializing Crawler...")
+    try:
+        # Assuming Crawler class is in d4jules.core.crawler
+        from d4jules.core.crawler import Crawler
+
+        # Extract limits from config (now a dict), defaulting to None if not specified
+        # load_config now processes sections into nested dicts, converting numbers
+        limits_settings = config.get('crawler_limits', {}) # section name is lowercased by load_config
+
+        max_pages_val = limits_settings.get('max_pages') # Will be int if conversion in load_config worked
+        max_depth_val = limits_settings.get('max_depth')
+
+        max_pages = None
+        if isinstance(max_pages_val, int) and max_pages_val > 0:
+            max_pages = max_pages_val
+
+        max_depth = None
+        if isinstance(max_depth_val, int) and max_depth_val >= 0: # Depth 0 is valid (crawl only base URL)
+            max_depth = max_depth_val
+
+        crawler_instance = Crawler(
+            base_url=target_url,
+            config=config, # Pass the whole config dict, Crawler can pick what it needs (e.g. api_key)
+            max_pages=max_pages,
+            max_depth=max_depth
+        )
+        crawler_instance.start_crawling()
+
+    except ImportError as e:
+        print(f"Error importing Crawler: {e}. Please ensure d4jules.core.crawler module exists.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred during the crawling process: {e}")
+        # Consider more detailed error logging or specific exception handling here
+        sys.exit(1)
+
+    print("\n--- d4jules scraping process finished ---")
 
 
 if __name__ == "__main__":
