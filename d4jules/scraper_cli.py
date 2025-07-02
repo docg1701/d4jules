@@ -82,21 +82,24 @@ def main():
         # Assuming Crawler class is in d4jules.core.crawler
         from d4jules.core.crawler import Crawler
 
-        # Extract limits from config, defaulting to None if not specified
-        # The structure config['limits']['max_pages'] is assumed from task D07/D02
-        limits_config = config.get('crawler_limits', {}) # Changed section name to 'crawler_limits' for clarity
-        max_pages = limits_config.getint('max_pages', fallback=None) # Use getint with fallback
-        max_depth = limits_config.getint('max_depth', fallback=None) # Use getint with fallback
+        # Extract limits from config (now a dict), defaulting to None if not specified
+        # load_config now processes sections into nested dicts, converting numbers
+        limits_settings = config.get('crawler_limits', {}) # section name is lowercased by load_config
 
-        if max_pages is not None: # getint might return 0 if key exists but is empty, treat 0 as unlimited for now or specific handling
-             if max_pages <= 0: max_pages = None # Treat 0 or negative as no limit
-        if max_depth is not None:
-             if max_depth < 0: max_depth = None # Treat negative as no limit (0 means only base_url)
+        max_pages_val = limits_settings.get('max_pages') # Will be int if conversion in load_config worked
+        max_depth_val = limits_settings.get('max_depth')
 
+        max_pages = None
+        if isinstance(max_pages_val, int) and max_pages_val > 0:
+            max_pages = max_pages_val
+
+        max_depth = None
+        if isinstance(max_depth_val, int) and max_depth_val >= 0: # Depth 0 is valid (crawl only base URL)
+            max_depth = max_depth_val
 
         crawler_instance = Crawler(
             base_url=target_url,
-            config=config, # Pass the whole config object, Crawler can pick what it needs
+            config=config, # Pass the whole config dict, Crawler can pick what it needs (e.g. api_key)
             max_pages=max_pages,
             max_depth=max_depth
         )

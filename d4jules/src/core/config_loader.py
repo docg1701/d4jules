@@ -58,6 +58,22 @@ def load_config(config_path: str = "d4jules/config/config.ini") -> dict:
     if 'SCRAPER' in config:
         loaded_config['scraper_settings'] = dict(config.items('SCRAPER'))
     else:
-        loaded_config['scraper_settings'] = {}
+        loaded_config['scraper_settings'] = {} # Keep for backward compatibility if needed
+
+    # Process other sections as nested dictionaries
+    for section in config.sections():
+        if section not in ['GOOGLE_AI', 'LLM', 'SCRAPER']: # Already processed or handled differently
+            loaded_config[section.lower()] = {} # Use lower case for dict key
+            for key, value in config.items(section):
+                # Try to convert to int or float if possible, else keep as string
+                if value.isdigit():
+                    loaded_config[section.lower()][key] = int(value)
+                elif value.replace('.', '', 1).isdigit(): # simple float check
+                    try:
+                        loaded_config[section.lower()][key] = float(value)
+                    except ValueError:
+                        loaded_config[section.lower()][key] = value # Keep as string if float conversion fails
+                else:
+                    loaded_config[section.lower()][key] = value
 
     return loaded_config

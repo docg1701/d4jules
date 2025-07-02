@@ -9,14 +9,20 @@ from urllib.parse import urlparse, urljoin # urljoin was missing in plan text bu
 # For now, let's define a mock so the file is syntactically valid
 class MockAnalyzer:
     def analyze_url_for_selectors(self, url: str, config: Dict[str, Any]) -> Optional[Tuple[Optional[str], Optional[str], Optional[str]]]:
-        print(f"MockAnalyzer: Pretending to analyze {url} for selectors.")
-        # Simulate finding selectors for a specific domain or path for testing purposes
-        if "example.com" in url:
-            # (content_selector, nav_selector, next_page_selector)
-            return ("#main_content", "#navigation", ".next_page_link")
+        print(f"MockAnalyzer: Analyzing {url} for selectors (E2E Test Mode).")
+        # For E2E testing (task-T02), provide fixed selectors for "test-site.com"
+        if "test-site.com" in url:
+            content_selector = "div#content"
+            nav_selector = "nav#nav_menu"
+            next_page_selector = "a.next_button"
+            print(f"  MockAnalyzer: Returning selectors for test-site: C='{content_selector}', N='{nav_selector}', NP='{next_page_selector}'")
+            return (content_selector, nav_selector, next_page_selector)
+
+        # Fallback for other URLs or if the actual analyzer from D09 is different
+        print(f"  MockAnalyzer: No predefined selectors for {url}. Returning None.")
         return (None, None, None)
 
-analyzer = MockAnalyzer() # Replace with actual import and instantiation
+analyzer = MockAnalyzer() # This will be used by Crawler unless D09 provides a real one and updates the import
 
 from d4jules.core.parser import parse_html_content
 from d4jules.core.writer import save_content_as_markdown

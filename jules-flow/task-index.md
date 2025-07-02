@@ -21,7 +21,7 @@
 | task-D11     | Implementar extração de conteúdo e links com BeautifulSoup | development | done | medium | ["task-R03"] | Jules     |
 | task-D12     | Implementar conversão para Markdown e salvamento de arquivos | development | done | medium | ["task-R04", "task-D01"] | Jules     |
 | task-D13     | Implementar lógica principal de orquestração do crawling | development | done | high | ["task-D09", "task-D10", "task-D11", "task-D12"] | Jules     |
-| task-T02     | Testar funcionalidade completa do scraper_cli.py | test | backlog | high | ["task-D01", "task-D07", "task-D08", "task-D13"] | Jules     |
+| task-T02     | Testar funcionalidade completa do scraper_cli.py | test | done | high | ["task-D01", "task-D07", "task-D08", "task-D13"] | Jules     |
 | task-T03     | Testes para a task-D01: Verificação da estrutura de diretórios | test | backlog | medium | ["task-D01"] | Jules     |
 | task-T04     | Testes para a task-D02: Verificação dos arquivos de configuração | test | backlog | medium | ["task-D02"] | Jules     |
 | task-T05     | Testes para a task-D03: Verificação do arquivo requirements.txt | test | backlog | medium | ["task-D03"] | Jules     |

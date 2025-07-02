@@ -1,4 +1,7 @@
 # This file makes d4jules.src.core a subpackage
+# It should only export symbols defined within this specific subpackage (d4jules/src/core).
+# Core logic modules like analyzer, crawler, parser, writer are in d4jules/core/.
 from .config_loader import load_config, ConfigError
-from .analyzer import analyze_url_for_selectors, HtmlSelectors, AnalyzerError, NetworkError, LLMAnalysisError
-from .crawler import Crawler
+
+# Ensure that LangChainDeprecationWarning is handled or acknowledged if it persists from this level.
+# For now, focusing on structure.
