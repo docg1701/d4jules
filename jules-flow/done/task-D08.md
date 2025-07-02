@@ -21,19 +21,37 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: 2024-07-26T18:30:00Z # Estimado
+# end_time: 2024-07-26T18:50:00Z # Estimado
+# duration_minutes: 20 # Estimado
 # files_modified:
 #   - d4jules/scraper_cli.py
 # reference_documents_consulted:
-#   - jules-flow/working-plan.md
+#   - jules-flow/in_progress/task-D08.md
+#   - VISION.md
+#   - d4jules/src/core/config_loader.py
 # execution_details: |
-#   Adicionada lógica ao `main()` ou função apropriada em `d4jules/scraper_cli.py`
-#   para exibir uma mensagem ao usuário e capturar a entrada da URL via `input()`.
-#   A URL é armazenada em uma variável.
+#   1. Modificado `d4jules/scraper_cli.py`.
+#   2. Importado `load_config` e `ConfigError` de `d4jules.src.core.config_loader` e `sys`.
+#   3. Na função `main()`:
+#      - Adicionado bloco try-except para carregar configuração usando `load_config()`. Em caso de `ConfigError` ou outra exceção, imprime mensagem de erro e sai.
+#      - Se configuração carregada, imprime mensagem de boas-vindas.
+#   4. Criada a função `get_user_url()`:
+#      - Entra em loop para solicitar a URL ao usuário via `input()`.
+#      - Valida se a URL não está vazia.
+#      - Valida se a URL começa com "http://" ou "https://".
+#      - Oferece sugestão de adicionar "https://" se parecer um erro comum.
+#      - Valida basicamante se existe um "." após "://" para checar a presença de um domínio.
+#      - Retorna a URL validada.
+#   5. Na `main()`, `get_user_url()` é chamada dentro de um try-except para `KeyboardInterrupt`.
+#   6. A URL obtida é impressa, seguida de uma mensagem placeholder para futuras ações.
+#   7. Teste manual (não interativo):
+#      - `d4jules/config/config.ini` foi criado (copiando o template) para o teste.
+#      - Executado `python3 -m d4jules.scraper_cli`.
+#      - Verificou-se que o script carregou a configuração, imprimiu a mensagem de boas-vindas e o prompt para URL.
+#      - A execução terminou com `EOFError` devido à ausência de input interativo, o que é esperado. A lógica de validação da URL foi revisada manualmente e considerada correta para um cenário interativo.
 # ---------------------------------------------------------------
 ---
 

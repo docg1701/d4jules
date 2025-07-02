@@ -19,19 +19,27 @@ description: |
 # ---------------------------------------------------------------
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
-# outcome: success | failure
+# outcome: success
 # outcome_reason: ""
-# start_time: YYYY-MM-DDTHH:MM:SSZ
-# end_time: YYYY-MM-DDTHH:MM:SSZ
-# duration_minutes: 0
+# start_time: 2024-07-26T17:00:00Z # Estimado
+# end_time: 2024-07-26T17:15:00Z # Estimado
+# duration_minutes: 15 # Estimado
 # files_modified:
 #   - start.sh
+#   - .gitignore # Adicionado .venv/
 # reference_documents_consulted:
-#   - jules-flow/working-plan.md
-#   - jules_bootstrap.sh (para confirmar disponibilidade de python3-venv)
+#   - jules-flow/in_progress/task-D04.md
+#   - VISION.md
 # execution_details: |
-#   Script `start.sh` criado/atualizado com comandos para verificar a existência de `.venv`
-#   e criá-lo com `python3 -m venv .venv` caso não exista.
+#   1. Criado o arquivo `start.sh` na raiz do projeto com o shebang `#!/bin/bash`.
+#   2. Implementada a lógica para verificar se o diretório `.venv` existe.
+#      - Se não existe, imprime "Virtual environment '.venv' not found. Creating..." e executa `python3 -m venv .venv`. Imprime mensagem de sucesso ou erro.
+#      - Se existe, imprime "Virtual environment '.venv' found."
+#   3. O script `start.sh` foi tornado executável com `chmod +x start.sh`.
+#   4. Adicionado `.venv/` ao arquivo `.gitignore` (criado se não existisse) para evitar que o ambiente virtual seja versionado.
+#   5. Testes manuais foram realizados:
+#      - Cenário 1 (.venv não existe): `rm -rf .venv`, `./start.sh`. Verificou-se a criação do `.venv` e as mensagens corretas.
+#      - Cenário 2 (.venv existe): `./start.sh` novamente. Verificou-se a mensagem de que o venv foi encontrado.
 # ---------------------------------------------------------------
 ---
 
