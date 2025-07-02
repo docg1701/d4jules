@@ -1,0 +1,53 @@
+---
+id: task-DOC02
+title: "Adicionar seção de Referências ao README.md"
+type: documentation
+status: backlog
+priority: low
+dependencies: ["task-DOC01"] # README.md deve existir
+parent_plan_objective_id: "4.2"
+discovered_research_needed: []
+assigned_to: Jules
+created_by: Jules
+created_at: YYYY-MM-DDTHH:MM:SSZ
+updated_at: YYYY-MM-DDTHH:MM:SSZ
+tags: ["documentation", "readme"]
+description: |
+  Adicionar uma seção chamada "Referências" (ou "Technologies Used" / "Tecnologias Utilizadas") ao arquivo `README.md` do projeto.
+  Esta seção deve listar as principais tecnologias e bibliotecas utilizadas no `d4jules`, com links para suas respectivas documentações ou repositórios.
+  As tecnologias a serem listadas são:
+  1.  LangChain (Python): `https://github.com/langchain-ai/langchain`
+  2.  Google Gemini API (Python SDK): `https://github.com/google/generative-ai-python`
+  3.  Beautiful Soup: `https://beautiful-soup-4.readthedocs.io/en/latest/`
+  4.  html2text: `https://github.com/Alir3z4/html2text`
+
+# Não modificar esta seção manualmente. Jules irá preenchê-la.
+# ---------------------------------------------------------------
+# RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
+# ---------------------------------------------------------------
+# outcome: success | failure
+# outcome_reason: ""
+# start_time: YYYY-MM-DDTHH:MM:SSZ
+# end_time: YYYY-MM-DDTHH:MM:SSZ
+# duration_minutes: 0
+# files_modified:
+#   - README.md
+# reference_documents_consulted:
+#   - jules-flow/working-plan.md
+# execution_details: |
+#   Adicionada a seção "Referências" ao final do arquivo `README.md`
+#   com a lista das tecnologias e seus respectivos links, conforme especificado.
+# ---------------------------------------------------------------
+---
+
+## Arquivos Relevantes (Escopo da Tarefa)
+* `README.md` (modificação)
+
+## Critérios de Aceitação
+1.  Uma seção "Referências" (ou similar) é adicionada ao `README.md`.
+2.  A seção lista LangChain, Google Gemini API (Python SDK), Beautiful Soup e html2text.
+3.  Cada item listado possui o link correto para sua documentação ou repositório GitHub, conforme especificado no `working-plan.md`.
+
+## Observações Adicionais
+Esta task finaliza a documentação inicial do projeto conforme o plano.
+```
