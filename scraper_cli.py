@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# d4jules/scraper_cli.py
+# scraper_cli.py
 
 import sys
-from d4jules.src.core.config_loader import load_config, ConfigError
+from src.core.config_loader import load_config, ConfigError
 
 def get_user_url() -> str | None:
     """
@@ -53,8 +53,8 @@ def main():
         # You might want to print some config values here for debugging if needed, e.g., config.get('model_name')
     except ConfigError as e:
         print(f"Configuration error: {e}")
-        print("Please ensure 'd4jules/config/config.ini' exists and is correctly formatted.")
-        print("You can copy 'd4jules/config/config.ini.template' to 'd4jules/config/config.ini' and fill in your API_KEY.")
+        print("Please ensure 'config/config.ini' exists and is correctly formatted.")
+        print("You can copy 'config/config.ini.template' to 'config/config.ini' and fill in your API_KEY.")
         sys.exit(1)
     except Exception as e: # Catch any other unexpected error during config load
         print(f"An unexpected error occurred while loading configuration: {e}")
@@ -79,8 +79,8 @@ def main():
 
     print("\nInitializing Crawler...")
     try:
-        # Crawler class is in d4jules.src.core.crawler
-        from d4jules.src.core.crawler import Crawler
+        # Crawler class is in src.core.crawler
+        from src.core.crawler import Crawler
 
         # Extract limits from config (now a dict), defaulting to None if not specified
         # load_config now processes sections into nested dicts, converting numbers
@@ -106,7 +106,7 @@ def main():
         crawler_instance.start_crawling()
 
     except ImportError as e:
-        print(f"Error importing Crawler: {e}. Please ensure d4jules.core.crawler module exists.")
+        print(f"Error importing Crawler: {e}. Please ensure src.core.crawler module exists.")
         sys.exit(1)
     except Exception as e:
         print(f"An error occurred during the crawling process: {e}")

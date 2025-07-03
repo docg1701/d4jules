@@ -14,7 +14,7 @@ updated_at: YYYY-MM-DDTHH:MM:SSZ
 tags: ["development", "python", "llm", "langchain", "gemini", "html", "core"]
 description: |
   Desenvolver a funcionalidade de análise de HTML usando um modelo de linguagem (LLM) para extrair seletores CSS.
-  Esta funcionalidade deve ser encapsulada, preferencialmente em um novo arquivo como `d4jules/core/analyzer.py`.
+  Esta funcionalidade deve ser encapsulada no arquivo `src/core/analyzer.py`.
   A função principal deve:
   1. Aceitar uma URL como entrada.
   2. Baixar o conteúdo HTML da URL usando a biblioteca `requests`.
@@ -32,21 +32,21 @@ description: |
 # RELATÓRIO DE EXECUÇÃO (Preenchido por Jules ao concluir/falhar)
 # ---------------------------------------------------------------
 # outcome: success
-# outcome_reason: ""
-# start_time: 2024-07-26T14:00:00Z # Estimado
-# end_time: 2024-07-26T14:45:00Z # Estimado
-# duration_minutes: 45 # Estimado
+# outcome_reason: "Arquivo recriado em src/core/analyzer.py e caminhos atualizados devido à refatoração da estrutura do projeto."
+# start_time: 2024-07-26T14:00:00Z # Estimado (original)
+# end_time: 2024-07-26T14:45:00Z # Estimado (original)
+# duration_minutes: 45 # Estimado (original)
 # files_modified:
-#   - d4jules/src/core/analyzer.py
-#   - d4jules/src/core/__init__.py
+#   - src/core/analyzer.py
+#   - src/core/__init__.py # (Assumindo que __init__.py é atualizado para exportar os componentes do analyzer)
 # reference_documents_consulted:
 #   - jules-flow/in_progress/task-D09.md
 #   - VISION.md
 #   - jules-flow/docs/reference/langchain_research.md
 #   - jules-flow/docs/reference/gemini_api_research.md
-#   - d4jules/src/core/config_loader.py
+#   - src/core/config_loader.py # (Path to config_loader updated)
 # execution_details: |
-#   1. Criado o arquivo `d4jules/src/core/analyzer.py`.
+#   1. Criado/Recriado o arquivo `src/core/analyzer.py`.
 #   2. Definido o Pydantic model `HtmlSelectors` para a saída estruturada (content_selector, navigation_selector, next_page_selector) com validadores básicos.
 #   3. Implementada a função `analyze_url_for_selectors(url: str, config: Dict[str, Any]) -> HtmlSelectors`.
 #      - Utiliza `requests.get()` para baixar o conteúdo HTML da URL, com timeout e tratamento de erro (`NetworkError`).
@@ -55,19 +55,19 @@ description: |
 #      - Prepara um prompt do sistema e um prompt humano, enviando um snippet do HTML para o LLM.
 #      - Inclui tratamento de erro para a inicialização do LLM e para a invocação (`LLMAnalysisError`).
 #   4. Adicionadas importações necessárias (`os`, `requests`, `Optional`, `Dict`, `Any`, Pydantic models, LangChain components, custom exceptions).
-#   5. O arquivo `d4jules/src/core/__init__.py` foi atualizado para exportar `analyze_url_for_selectors`, `HtmlSelectors`, e as custom exceptions (`AnalyzerError`, `NetworkError`, `LLMAnalysisError`).
-#   6. O `analyzer.py` inclui um bloco `if __name__ == "__main__":` para demonstração básica (requer `config.ini` e acesso à rede).
+#   5. O arquivo `src/core/__init__.py` deve ser atualizado para exportar `analyze_url_for_selectors`, `HtmlSelectors`, e as custom exceptions (`AnalyzerError`, `NetworkError`, `LLMAnalysisError`).
+#   6. O `analyzer.py` inclui um bloco `if __name__ == "__main__":` para demonstração básica (requer `config/config.ini` e acesso à rede).
 #   (Nota: A integração com `scraper_cli.py` será feita em uma task futura.)
 # ---------------------------------------------------------------
 ---
 
 ## Arquivos Relevantes (Escopo da Tarefa)
-* `d4jules/core/analyzer.py` (criação)
-* `d4jules/scraper_cli.py` (para chamar a função de análise) # Modificação adiada
-* `d4jules/config.ini` (leitura para API key e nome do modelo)
+* `src/core/analyzer.py` (criação/modificação)
+* `scraper_cli.py` (para chamar a função de análise) # Modificação adiada
+* `config/config.ini` (leitura para API key e nome do modelo)
 
 ## Critérios de Aceitação
-1.  Uma função é criada em `d4jules/core/analyzer.py` que baixa o HTML de uma URL.
+1.  Uma função é criada em `src/core/analyzer.py` que baixa o HTML de uma URL.
 2.  A função prepara um prompt adequado para o LLM, instruindo-o a encontrar os seletores CSS.
 3.  A função utiliza LangChain e o modelo Gemini (configurado) para processar o prompt.
 4.  A resposta do LLM é parseada como JSON (usando `.with_structured_output()`) para extrair `content_selector`, `navigation_selector`, e opcionalmente `next_page_selector`.
