@@ -46,7 +46,7 @@ def _generate_filename_from_url(page_url: str) -> str:
 def save_content_as_markdown(
     page_url: str,
     html_content: Optional[str],
-    output_dir: str = "d4jules/output"
+    output_dir: str = "output"
 ) -> Optional[str]:
     """
     Converts HTML content to Markdown and saves it to a file.

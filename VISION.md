@@ -8,20 +8,20 @@ O projeto **d4jules** visa criar uma ferramenta de linha de comando (CLI) em Pyt
 
 A arquitetura do `d4jules` será modular, organizada da seguinte forma:
 
-*   **Interface de Linha de Comando (`scraper_cli.py`):** Ponto de entrada da aplicação, responsável pela interação com o usuário (coleta da URL inicial) e orquestração geral do processo.
-*   **Módulo de Configuração (`d4jules/config/`):** Gerenciará as configurações da aplicação, como API keys e parâmetros do LLM, através de um arquivo `config.ini`. (Nota: O diretório `d4jules/config/` será criado em uma tarefa futura, `task-D02`).
-*   **Núcleo de Processamento (`d4jules/src/core/`):**
-    *   `analyzer.py` (ou similar): Responsável por interagir com o LLM (via LangChain) para analisar o HTML e extrair seletores CSS para conteúdo e navegação.
-    *   `crawler.py` (ou similar): Gerenciará a fila de URLs, fará as requisições HTTP para baixar as páginas.
-    *   `parser.py` (ou similar): Utilizará bibliotecas como BeautifulSoup para parsear o HTML bruto e extrair texto e links com base nos seletores fornecidos pelo `analyzer`.
-    *   `writer.py` (ou similar): Converterá o conteúdo HTML extraído para Markdown (usando html2text) e salvará no sistema de arquivos.
-*   **Utilitários (`d4jules/src/utils/`):** Contém funções auxiliares, como logging, manipulação de arquivos, etc.
-*   **Saída de Dados (`d4jules/output/`):** Diretório padrão para armazenar os arquivos Markdown gerados e, potencialmente, os HTMLs brutos para referência.
-    *   `d4jules/output/markdown/`
-    *   `d4jules/output/raw_html/`
+*   **Interface de Linha de Comando (`scraper_cli.py`):** Ponto de entrada da aplicação, localizado na raiz do projeto, responsável pela interação com o usuário (coleta da URL inicial) e orquestração geral do processo.
+*   **Módulo de Configuração (`config/`):** Localizado na raiz, gerenciará as configurações da aplicação, como API keys e parâmetros do LLM, através de um arquivo `config.ini`.
+*   **Núcleo de Processamento (`src/core/`):**
+    *   `analyzer.py`: Responsável por interagir com o LLM (via LangChain) para analisar o HTML e extrair seletores CSS para conteúdo e navegação.
+    *   `crawler.py`: Gerenciará a fila de URLs, fará as requisições HTTP para baixar as páginas.
+    *   `parser.py`: Utilizará bibliotecas como BeautifulSoup para parsear o HTML bruto e extrair texto e links com base nos seletores fornecidos pelo `analyzer`.
+    *   `writer.py`: Converterá o conteúdo HTML extraído para Markdown (usando html2text) e salvará no sistema de arquivos.
+*   **Utilitários (`src/utils/`):** Contém funções auxiliares, como logging, manipulação de arquivos, etc.
+*   **Saída de Dados (`output/`):** Diretório padrão na raiz para armazenar os arquivos Markdown gerados e, potencialmente, os HTMLs brutos para referência.
+    *   `output/markdown/`
+    *   `output/raw_html/`
     (Nota: A subestrutura de `output/` será definida/refinada conforme a implementação).
-*   **Logs (`d4jules/logs/`):** Para armazenar logs da execução da aplicação. (Nota: O diretório `d4jules/logs/` será criado em uma tarefa futura).
-*   **Testes (`tests/`):** Contém os testes unitários e de integração para garantir a qualidade e o correto funcionamento da aplicação.
+*   **Logs (`logs/`):** Diretório na raiz para armazenar logs da execução da aplicação. (Nota: O diretório `logs/` será criado em uma tarefa futura).
+*   **Testes (`tests/`):** Localizado na raiz, contém os testes unitários e de integração para garantir a qualidade e o correto funcionamento da aplicação. Testes para módulos em `src/core/` podem estar em `tests/core/`.
 *   **Documentação (`docs/`):** Para documentação adicional do projeto, se necessário, além do `README.md`.
 *   **Script de Automação (`start.sh`):** Facilitará a configuração do ambiente (criação de venv, instalação de dependências) e a execução da aplicação.
 

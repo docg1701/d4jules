@@ -5,7 +5,7 @@ class ConfigError(Exception):
     """Custom exception for configuration errors."""
     pass
 
-def load_config(config_path: str = "d4jules/config/config.ini") -> dict:
+def load_config(config_path: str = "config/config.ini") -> dict:
     """
     Loads configuration from the specified .ini file.
 
