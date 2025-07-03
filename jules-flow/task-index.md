@@ -26,7 +26,7 @@
 | task-T04     | Testes para a task-D02: Verificação dos arquivos de configuração | test | done | medium | ["task-D02"] | Jules     |
 | task-T05     | Testes para a task-D03: Verificação do arquivo requirements.txt | test | done | medium | ["task-D03"] | Jules     |
 | task-T06     | Testes para a task-D07: Carregamento de Configuração (REFAZER) | test | done | high | ["task-D07"] | Jules     |
-| task-T07     | Testes para a task-D09: Análise de HTML com LLM para Extração de Seletores (REFAZER) | test | backlog | high | ["task-D09"] | Jules     |
+| task-T07     | Testes para a task-D09: Análise de HTML com LLM para Extração de Seletores | test | done | high | ["task-D09"] | Jules     |
 | task-T08     | Testes para a task-D04: Verificação e criação de .venv em start.sh | test | done | medium | ["task-D04"] | Jules     |
 | task-T09     | Testes para a task-D05: Ativação de venv e instalação de dependências em start.sh | test | done | medium | ["task-D05"] | Jules     |
 | task-T10     | Testes para a task-D06: Execução de scraper_cli.py em start.sh | test | done | medium | ["task-D06"] | Jules     |
