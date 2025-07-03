@@ -94,10 +94,13 @@ class Crawler:
         return len(self.visited_urls)
 
     def can_crawl_url(self, url: str) -> bool:
-        if not self.base_url:
+        normalized_url_to_check = self._normalize_url(url)
+        if not normalized_url_to_check: # If URL is fundamentally invalid (e.g. bad scheme, unparseable)
+            return False
+
+        if not self.base_url: # No domain scoping if base_url isn't set, but URL must be valid
             return True
 
-        normalized_url_to_check = self._normalize_url(url)
         normalized_base_url = self._normalize_url(self.base_url)
 
         if not normalized_url_to_check or not normalized_base_url:

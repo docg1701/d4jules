@@ -32,7 +32,7 @@
 | task-T10     | Testes para a task-D06: Execução de scraper_cli.py em start.sh | test | done | medium | ["task-D06"] | Jules     |
 | task-T11     | Testes para a task-D08: Solicitação de URL ao usuário em scraper_cli.py | test | done | medium | ["task-D08"] | Jules     |
 | task-FIX01   | Investigate and Restore Missing d4jules/src/core/crawler.py | fix | done | high | ["task-D10"] | Jules     |
-| task-T12     | Testes para a task-D10: Gerenciamento de Fila de URLs e Controle de Visitas (REFAZER) | test | backlog | medium | ["task-D10", "task-FIX01"] | Jules     |
+| task-T12     | Testes para a task-D10: Gerenciamento de Fila de URLs e Controle de Visitas | test | done | medium | ["task-D10", "task-FIX01"] | Jules     |
 | task-FIX02   | Investigate and Restore Missing d4jules/src/core/parser.py | fix | done | high | ["task-D11"] | Jules     |
 | task-T13     | Testes para a task-D11: Implementar extração de conteúdo e links com BeautifulSoup (REFAZER) | test | backlog | medium | ["task-D11", "task-FIX02"] | Jules     |
 | task-T14     | Testes para a task-D12: Implementar conversão para Markdown e salvamento de arquivos | test | backlog | medium | ["task-D12"] | Jules     |
