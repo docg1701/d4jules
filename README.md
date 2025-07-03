@@ -29,13 +29,13 @@ O script `jules_bootstrap.sh` (se fornecido e utilizado para configurar o ambien
 Antes de executar a aplicação, você precisa configurar sua chave de API do Google AI.
 
 1.  **Crie o arquivo de configuração:**
-    Copie o arquivo de modelo `d4jules/config/config.ini.template` para um novo arquivo chamado `d4jules/config/config.ini`.
+    Copie o arquivo de modelo `config/config.ini.template` para um novo arquivo chamado `config/config.ini`.
     ```bash
-    cp d4jules/config/config.ini.template d4jules/config/config.ini
+    cp config/config.ini.template config/config.ini
     ```
 
-2.  **Edite `d4jules/config/config.ini`:**
-    Abra o arquivo `d4jules/config/config.ini` em um editor de texto e preencha os seguintes campos:
+2.  **Edite `config/config.ini`:**
+    Abra o arquivo `config/config.ini` em um editor de texto e preencha os seguintes campos:
 
     *   Na seção `[GOOGLE_AI]`:
         *   `API_KEY`: Substitua `YOUR_GOOGLE_AI_API_KEY_HERE` pela sua chave de API real do Google AI Studio.
@@ -75,38 +75,42 @@ O script `start.sh` realizará as seguintes ações:
 *   Tentará atualizar o repositório local com `git pull`.
 *   Atualizará `pip` para a versão mais recente dentro do ambiente virtual.
 *   Instalará todas as dependências Python listadas no arquivo `requirements.txt`.
-*   Finalmente, executará a aplicação principal `d4jules/scraper_cli.py`.
+*   Finalmente, executará a aplicação principal a partir de `src/scraper_cli.py`.
 
-Após a execução, o `scraper_cli.py` (atualmente em desenvolvimento) solicitará a URL do site de documentação a ser processado.
+Após a execução, o `src/scraper_cli.py` (atualmente em desenvolvimento) solicitará a URL do site de documentação a ser processado.
 
 ## Estrutura do Projeto (Simplificada)
 
 ```
 .
-├── d4jules/                # Pacote principal da aplicação
-│   ├── __init__.py
-│   ├── scraper_cli.py      # Ponto de entrada da CLI
-│   ├── config/             # Arquivos de configuração
-│   │   ├── config.ini.template
-│   │   └── .gitignore      # Para ignorar config.ini
-│   ├── src/                # Código fonte principal
-│   │   ├── __init__.py
-│   │   └── core/           # Módulos principais (analyzer, crawler, etc.)
-│   │       ├── __init__.py
-│   │       ├── analyzer.py
-│   │       ├── config_loader.py
-│   │       └── crawler.py
-│   └── output/             # Saída gerada pelo scraper (ex: arquivos Markdown)
-│       └── .gitkeep
-├── tests/                  # Testes unitários e de integração
-│   ├── __init__.py
-│   ├── test_analyzer.py
-│   └── test_config_loader.py
 ├── .gitignore
+├── AGENTS.md
+├── README.md
+├── VISION.md
+├── config/                 # Arquivos de configuração
+│   ├── config.ini.template
+│   └── .gitignore          # Para ignorar config.ini
+├── d4jules.webp
+├── docs/                   # Documentação adicional do projeto
+│   └── .gitkeep
 ├── jules-flow/             # Arquivos de gerenciamento de fluxo para Jules (você!)
+├── jules_bootstrap.sh
+├── output/                 # Saída gerada pelo scraper (ex: arquivos Markdown)
+│   └── .gitkeep
 ├── requirements.txt        # Dependências Python
+├── src/                    # Código fonte principal
+│   ├── __init__.py         # Torna src um pacote Python
+│   ├── scraper_cli.py      # Ponto de entrada da CLI
+│   └── core/               # Módulos principais (analyzer, crawler, etc.)
+│       ├── __init__.py
+│       ├── analyzer.py
+│       ├── config_loader.py
+│       ├── crawler.py
+│       ├── parser.py
+│       └── writer.py
 ├── start.sh                # Script de inicialização e setup
-└── VISION.md               # Documento de visão do projeto
+└── tests/                  # Testes unitários e de integração
+    └── .gitkeep
 ```
 
 ## Tecnologias Utilizadas
