@@ -173,10 +173,13 @@ if __name__ == '__main__':
     #    Alternatively, provide the path to load_config.
 
     try:
-        from ..core.config_loader import load_config, ConfigError # Relative import for when run as part of package
+        # When running with `python -m src.core.analyzer`, this relative import works.
+        from .config_loader import load_config, ConfigError
         from pathlib import Path # Import Path here, as it's used if this block succeeds
     except ImportError:
-        # Fallback for running script directly (assuming src is in PYTHONPATH or similar)
+        # Fallback for running script directly (e.g. `python src/core/analyzer.py`)
+        # This path is more complex to get right for package structures.
+        # For direct execution, often sys.path manipulation is needed, or running from project root.
         # This is tricky. For direct execution, you might need to adjust PYTHONPATH.
         # A simpler way for this demo is to hardcode a test config if load_config fails.
         print("Could not perform relative import of config_loader. Using placeholder config for demo.")

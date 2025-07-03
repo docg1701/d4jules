@@ -2,7 +2,7 @@
 # scraper_cli.py
 
 import sys
-from src.core.config_loader import load_config, ConfigError
+from .core.config_loader import load_config, ConfigError
 
 def get_user_url() -> str | None:
     """
@@ -80,7 +80,7 @@ def main():
     print("\nInitializing Crawler...")
     try:
         # Crawler class is in src.core.crawler
-        from src.core.crawler import Crawler
+        from .core.crawler import Crawler
 
         # Extract limits from config (now a dict), defaulting to None if not specified
         # load_config now processes sections into nested dicts, converting numbers
