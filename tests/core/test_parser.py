@@ -1,5 +1,5 @@
 import unittest
-from d4jules.core.parser import parse_html_content
+from d4jules.src.core.parser import parse_html_content
 
 class TestParseHtmlContent(unittest.TestCase):
 
