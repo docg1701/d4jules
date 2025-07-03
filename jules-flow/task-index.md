@@ -35,7 +35,7 @@
 | task-T12     | Testes para a task-D10: Gerenciamento de Fila de URLs e Controle de Visitas | test | done | medium | ["task-D10", "task-FIX01"] | Jules     |
 | task-FIX02   | Investigate and Restore Missing d4jules/src/core/parser.py | fix | done | high | ["task-D11"] | Jules     |
 | task-T13     | Criar Testes para src.core.parser.parse_html_content | test | done | medium | ["task-D11", "task-FIX02"] | Jules     |
-| task-T14     | Testes para a task-D12: Implementar conversão para Markdown e salvamento de arquivos | test | backlog | medium | ["task-D12"] | Jules     |
+| task-T14     | Criar Testes para src.core.writer | test | done | medium | ["task-D12"] | Jules     |
 | task-T15     | Testes para a task-D13: Implementar lógica principal de orquestração do crawling | test | done | high | ["task-D13"] | Jules     |
 | task-DOC01   | Criar README.md para d4jules | documentation | done | medium | ["task-D02", "task-D06"] | Jules     |
 | task-DOC02   | Adicionar seção de Referências ao README.md | documentation | backlog | low | ["task-DOC01"] | Jules     |
