@@ -116,8 +116,8 @@ Após a execução, o `src/scraper_cli.py` (atualmente em desenvolvimento) solic
 ## Tecnologias Utilizadas
 
 *   **Python 3**
-*   **LangChain**: Para orquestração e interação com LLMs.
-*   **Google Gemini API**: Modelo de linguagem para análise de HTML.
-*   **BeautifulSoup4**: Para parsing de HTML.
-*   **html2text**: Para conversão de HTML para Markdown.
+*   **LangChain (Python)**: Para orquestração e interação com LLMs. ([GitHub](https://github.com/langchain-ai/langchain))
+*   **Google Gemini API (Python SDK)**: Modelo de linguagem para análise de HTML. ([GitHub](https://github.com/google/generative-ai-python))
+*   **Beautiful Soup 4**: Para parsing de HTML. ([Documentation](https://beautiful-soup-4.readthedocs.io/en/latest/))
+*   **html2text**: Para conversão de HTML para Markdown. ([GitHub](https://github.com/Alir3z4/html2text))
 *   **Requests**: Para requisições HTTP.

@@ -38,4 +38,4 @@
 | task-T14     | Criar Testes para src.core.writer | test | done | medium | ["task-D12"] | Jules     |
 | task-T15     | Testes para a task-D13: Implementar lógica principal de orquestração do crawling | test | done | high | ["task-D13"] | Jules     |
 | task-DOC01   | Criar README.md para d4jules | documentation | done | medium | ["task-D02", "task-D06"] | Jules     |
-| task-DOC02   | Adicionar seção de Referências ao README.md | documentation | backlog | low | ["task-DOC01"] | Jules     |
+| task-DOC02   | Adicionar seção de Referências ao README.md | documentation | done | low | ["task-DOC01"] | Jules     |
