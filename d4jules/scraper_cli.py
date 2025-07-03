@@ -79,8 +79,8 @@ def main():
 
     print("\nInitializing Crawler...")
     try:
-        # Assuming Crawler class is in d4jules.core.crawler
-        from d4jules.core.crawler import Crawler
+        # Crawler class is in d4jules.src.core.crawler
+        from d4jules.src.core.crawler import Crawler
 
         # Extract limits from config (now a dict), defaulting to None if not specified
         # load_config now processes sections into nested dicts, converting numbers
