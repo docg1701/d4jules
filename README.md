@@ -4,14 +4,15 @@
 
 **d4jules** é uma ferramenta de linha de comando (CLI) em Python projetada para analisar e realizar scraping de sites de documentação técnica. Utilizando Modelos de Linguagem Grandes (LLMs) como o Google Gemini, a ferramenta identifica autonomamente a estrutura de conteúdo e navegação das páginas, extrai as informações relevantes, converte-as para Markdown e as salva localmente. O objetivo é criar uma base de conhecimento estruturada para facilitar consultas por agentes de IA ou para referência pessoal.
 
-## Funcionalidades Principais (Planejadas)
+## Funcionalidades Principais
 
-*   Análise de HTML com LLM para identificar seletores CSS de conteúdo e navegação.
-*   Crawling automatizado de sites de documentação.
-*   Conversão de conteúdo HTML para Markdown.
-*   Gerenciamento de fila de URLs e controle de URLs já visitadas para evitar redundância e loops.
-*   Configuração flexível através de um arquivo `config.ini`.
-*   Script de inicialização (`start.sh`) para fácil configuração do ambiente e execução.
+*   **Análise Dinâmica de HTML:** Utiliza LLM (Google Gemini via LangChain) para identificar seletores CSS cruciais para conteúdo principal e links de navegação em páginas web.
+*   **Crawling Automatizado:** Percorre sites de documentação de forma autônoma, seguindo os links de navegação identificados.
+*   **Conversão para Markdown:** Transforma o conteúdo HTML relevante extraído em arquivos Markdown limpos e estruturados.
+*   **Gerenciamento Eficiente de URLs:** Mantém uma fila de URLs a visitar e um registro de URLs já processadas para evitar trabalho redundante e loops de navegação.
+*   **Configuração Centralizada:** Permite fácil configuração de chaves de API, modelos de LLM e outros parâmetros através de um arquivo `config/config.ini`.
+*   **Inicialização Simplificada:** Inclui um script `start.sh` que automatiza a criação/ativação do ambiente virtual, atualização do repositório, instalação de dependências e execução da aplicação.
+*   **Saída Organizada:** Salva os arquivos Markdown gerados no diretório `output/`, seguindo uma nomeclatura baseada na URL de origem.
 
 ## Pré-requisitos
 
@@ -43,7 +44,11 @@ Antes de executar a aplicação, você precisa configurar sua chave de API do Go
     *   Na seção `[LLM]`:
         *   `MODEL_NAME`: O padrão é `gemini-1.5-flash-latest`. Você pode alterar para outro modelo compatível se desejar (ex: `gemini-1.5-pro-latest`). Certifique-se de que o modelo escolhido suporta as funcionalidades necessárias (como "tool calling" ou saída estruturada, dependendo da implementação do `analyzer.py`).
 
-    Exemplo de `config.ini` preenchido (não comite este arquivo com sua chave real!):
+    *   Na seção `[CRAWLER_LIMITS]` (opcional, mas recomendada):
+        *   `MAX_PAGES`: Número máximo de páginas a serem processadas em uma execução (ex: `100`).
+        *   `MAX_DEPTH`: Profundidade máxima de crawling a partir da URL inicial (ex: `5`).
+
+    Exemplo de `config/config.ini` (não comite este arquivo com sua chave real!):
     ```ini
     [GOOGLE_AI]
     API_KEY = SUA_CHAVE_DE_API_REAL_AQUI
@@ -53,6 +58,10 @@ Antes de executar a aplicação, você precisa configurar sua chave de API do Go
 
     [SCRAPER]
     # Placeholder for future scraper-specific settings...
+
+    [CRAWLER_LIMITS]
+    MAX_PAGES = 100
+    MAX_DEPTH = 5
     ```
 
 ## Como Executar
@@ -75,11 +84,11 @@ O script `start.sh` realizará as seguintes ações:
 *   Tentará atualizar o repositório local com `git pull`.
 *   Atualizará `pip` para a versão mais recente dentro do ambiente virtual.
 *   Instalará todas as dependências Python listadas no arquivo `requirements.txt`.
-*   Finalmente, executará a aplicação principal a partir de `src/scraper_cli.py`.
+    Finalmente, executará a aplicação principal `src/scraper_cli.py` (como módulo: `python -m src.scraper_cli`).
 
-Após a execução, o `src/scraper_cli.py` (atualmente em desenvolvimento) solicitará a URL do site de documentação a ser processado.
+Após a execução, o `src/scraper_cli.py` solicitará a URL do site de documentação a ser processado e iniciará o crawling conforme configurado.
 
-## Estrutura do Projeto (Simplificada)
+## Estrutura do Projeto
 
 ```
 .
@@ -100,17 +109,21 @@ Após a execução, o `src/scraper_cli.py` (atualmente em desenvolvimento) solic
 ├── requirements.txt        # Dependências Python
 ├── src/                    # Código fonte principal
 │   ├── __init__.py         # Torna src um pacote Python
-│   ├── scraper_cli.py      # Ponto de entrada da CLI
-│   └── core/               # Módulos principais (analyzer, crawler, etc.)
-│       ├── __init__.py
-│       ├── analyzer.py
-│       ├── config_loader.py
-│       ├── crawler.py
-│       ├── parser.py
-│       └── writer.py
-├── start.sh                # Script de inicialização e setup
+│   ├── scraper_cli.py      # Ponto de entrada da CLI (executado como módulo)
+│   └── core/               # Módulos do núcleo da aplicação
+│       ├── __init__.py     # Torna core um sub-pacote
+│       ├── analyzer.py     # Análise de HTML com LLM
+│       ├── config_loader.py# Carregamento de configuração
+│       ├── crawler.py      # Lógica de crawling e gerenciamento de fila
+│       ├── parser.py       # Parsing de HTML com BeautifulSoup
+│       └── writer.py       # Conversão para Markdown e escrita de arquivos
+├── start.sh                # Script de inicialização, setup de ambiente e execução
 └── tests/                  # Testes unitários e de integração
-    └── .gitkeep
+    ├── __init__.py
+    ├── .gitkeep
+    └── core/               # Testes para os módulos do núcleo
+        ├── __init__.py
+        └── .gitkeep
 ```
 
 ## Tecnologias Utilizadas
@@ -121,3 +134,5 @@ Após a execução, o `src/scraper_cli.py` (atualmente em desenvolvimento) solic
 *   **Beautiful Soup 4**: Para parsing de HTML. ([Documentation](https://beautiful-soup-4.readthedocs.io/en/latest/))
 *   **html2text**: Para conversão de HTML para Markdown. ([GitHub](https://github.com/Alir3z4/html2text))
 *   **Requests**: Para requisições HTTP.
+*   **lxml**: Parser HTML eficiente usado com BeautifulSoup.
+*   **unittest & unittest.mock**: Para escrita e execução de testes unitários em Python.
