@@ -92,12 +92,10 @@ Analise o seguinte código HTML e identifique os seletores CSS para:
 Considere a semântica e estrutura comum de páginas web.
 
 HTML:
-```html
 {html_content}
-```
+
 Responda estritamente no formato JSON especificado.
 """
-
 response_json = model_for_json.generate_content(prompt_analise_html)
 
 # A resposta em response_json.text será uma string JSON.
@@ -125,9 +123,6 @@ except AttributeError: # Caso .text não seja o caminho direto para o JSON
     # Com `google-generativeai` puro, o `response.text` é o mais comum para JSON direto.
     print("Não foi possível acessar .text, inspecione o objeto de resposta:", response_json)
 
-
-```
-
 **Considerações:**
 *   **`response_mime_type="application/json"`**: Crucial para instruir o modelo a gerar JSON.
 *   **`response_schema`**: Fornece a estrutura esperada. Pode ser uma classe Pydantic, uma `typing.TypedDict`, ou um dicionário representando o JSON Schema. Pydantic é conveniente no Python.
@@ -143,4 +138,3 @@ Referência: [Structured Output with Gemini API](https://ai.google.dev/gemini-ap
 
 URL de referência principal do SDK: `https://github.com/google/generative-ai-python`
 Documentação principal: `https://ai.google.dev/gemini-api/docs`
-```
