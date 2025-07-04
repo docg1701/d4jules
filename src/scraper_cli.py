@@ -2,7 +2,13 @@
 # scraper_cli.py
 
 import sys
+import logging # Added for logging
 from .core.config_loader import load_config, ConfigError
+
+# Configure logger for this module
+# Note: Basic config should ideally be done once at the application entry point.
+# We will do it in main().
+logger = logging.getLogger(__name__)
 
 def get_user_url() -> str | None:
     """
@@ -10,83 +16,88 @@ def get_user_url() -> str | None:
     Keeps prompting until a valid-looking URL is provided or the user cancels.
     """
     while True:
-        url = input("Please enter the full URL of the documentation site to scrape (e.g., http://example.com): ")
-        if not url:
-            print("URL cannot be empty. Please try again or press Ctrl+C to exit.")
-            continue
-        if not (url.startswith("http://") or url.startswith("https://")):
-            print("Invalid URL format. Please ensure it starts with 'http://' or 'https://'.")
-            # Offer to prepend if it looks like a common mistake
-            if "." in url and "/" in url and not url.startswith("http"):
-                 try_prepend = input(f"Did you mean 'https://{url}'? (yes/no): ").lower()
-                 if try_prepend == 'yes':
-                     url = f"https://{url}"
-                     print(f"Using URL: {url}")
-                     # Fall through to validation again, though it should pass now
-                 else:
-                     continue # Re-prompt
-            else:
-                continue # Re-prompt
+        try:
+            url = input("Please enter the full URL of the documentation site to scrape (e.g., http://example.com): ")
+            if not url:
+                logger.warning("URL cannot be empty. Please try again or press Ctrl+C/Ctrl+D to exit.")
+                continue
+            if not (url.startswith("http://") or url.startswith("https://")):
+                logger.warning("Invalid URL format. Please ensure it starts with 'http://' or 'https://'.")
+                if "." in url and "/" in url and not url.startswith("http"):
+                     try_prepend = input(f"Did you mean 'https://{url}'? (yes/no): ").lower()
+                     if try_prepend == 'yes':
+                         url = f"https://{url}"
+                         logger.info(f"Using URL: {url}")
+                     else:
+                         continue
+                else:
+                    continue
 
-        # Basic check for at least one dot after http(s):// and some path or TLD
-        if "://" in url and "." not in url.split("://", 1)[1]:
-            print("URL appears incomplete (missing a domain like '.com'). Please provide a full URL.")
-            continue
+            if "://" in url and "." not in url.split("://", 1)[1]:
+                logger.warning("URL appears incomplete (missing a domain like '.com'). Please provide a full URL.")
+                continue
+            return url
+        except EOFError: # Handle Ctrl+D
+            logger.info("\nOperation cancelled by user (EOF). Exiting.")
+            sys.exit(0)
 
-        return url
 
 def main():
     """
     Main entry point for the d4jules scraper CLI application.
     """
-    print("--- Welcome to d4jules - Documentation Scraper ---")
+    # --- Basic Logging Configuration ---
+    logging.basicConfig(
+        level=logging.INFO, # Default level, DEBUG provides more verbose output
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)] # Log to console
+    )
+    # Re-get the logger for this module after basicConfig is set.
+    # This ensures this module's logger also adheres to the basicConfig.
+    # Or, if other modules are imported after basicConfig, their getLogger will also adhere.
+    global logger
+    logger = logging.getLogger(__name__) # Get a logger specific to this module
+
+    logger.info("--- Welcome to d4jules - Documentation Scraper ---")
 
     # Load configuration
     config = None
     try:
-        # Assuming config_loader is in d4jules.src.core
-        # The path to config.ini is relative to the project root where start.sh is typically run
-        # If scraper_cli.py is run directly from d4jules/, this path might need adjustment
-        # For now, using the path as defined in load_config default
         config = load_config()
-        print("Configuration loaded successfully.")
-        # You might want to print some config values here for debugging if needed, e.g., config.get('model_name')
+        logger.info("Configuration loaded successfully.")
+        logger.debug(f"Loaded config: API Key present: {'api_key' in config}, Model: {config.get('model_name')}")
     except ConfigError as e:
-        print(f"Configuration error: {e}")
-        print("Please ensure 'config/config.ini' exists and is correctly formatted.")
-        print("You can copy 'config/config.ini.template' to 'config/config.ini' and fill in your API_KEY.")
+        logger.error(f"Configuration error: {e}")
+        logger.error("Please ensure 'config/config.ini' exists and is correctly formatted.")
+        logger.error("You can copy 'config/config.ini.template' to 'config/config.ini' and fill in your API_KEY.")
         sys.exit(1)
-    except Exception as e: # Catch any other unexpected error during config load
-        print(f"An unexpected error occurred while loading configuration: {e}")
+    except Exception as e:
+        logger.critical(f"An unexpected error occurred while loading configuration: {e}", exc_info=True)
         sys.exit(1)
 
     # Get URL from user
     target_url = None
     try:
         target_url = get_user_url()
-        if target_url is None: # Should not happen with current get_user_url loop, but as safeguard
-            print("No URL provided. Exiting.")
+        if target_url is None:
+            logger.error("No URL provided. Exiting.") # Should be caught by get_user_url's loop or EOF
             sys.exit(1)
     except KeyboardInterrupt:
-        print("\nOperation cancelled by user. Exiting.")
+        logger.info("\nOperation cancelled by user (Ctrl+C). Exiting.")
         sys.exit(0)
 
-    print(f"\nURL to be processed: {target_url}")
+    logger.info(f"URL to be processed: {target_url}")
 
-    # Placeholder for next steps
-    # print("\nURL received. Further processing (analysis, scraping) will be implemented in next tasks.")
-    # print("----------------------------------------------------")
-
-    print("\nInitializing Crawler...")
+    logger.info("Initializing Crawler...")
     try:
-        # Crawler class is in src.core.crawler
+        # Imports moved here to ensure logging is configured before they might log something at import time (if they did)
         from .core.crawler import Crawler
+        from .core.analyzer import analyze_url_for_selectors, AnalyzerError, NetworkError, LLMAnalysisError
+        from .core.parser import parse_html_content
+        from .core.writer import save_content_as_markdown
 
-        # Extract limits from config (now a dict), defaulting to None if not specified
-        # load_config now processes sections into nested dicts, converting numbers
-        limits_settings = config.get('crawler_limits', {}) # section name is lowercased by load_config
-
-        max_pages_val = limits_settings.get('max_pages') # Will be int if conversion in load_config worked
+        limits_settings = config.get('crawler_limits', {})
+        max_pages_val = limits_settings.get('max_pages')
         max_depth_val = limits_settings.get('max_depth')
 
         max_pages = None
@@ -94,23 +105,46 @@ def main():
             max_pages = max_pages_val
 
         max_depth = None
-        if isinstance(max_depth_val, int) and max_depth_val >= 0: # Depth 0 is valid (crawl only base URL)
+        if isinstance(max_depth_val, int) and max_depth_val >= 0:
             max_depth = max_depth_val
+
+        analyzer_config_dict = {
+            'api_key': config.get('api_key'),
+            'model_name': config.get('model_name')
+        }
+
+        # Determine output directory
+        # Example: output_dir = config.get('scraper_settings', {}).get('default_output_dir', 'output')
+        # For now, hardcoding to 'output' as per Crawler's new default.
+        output_dir = config.get('output_dir', 'output')
+
 
         crawler_instance = Crawler(
             base_url=target_url,
-            config=config, # Pass the whole config dict, Crawler can pick what it needs (e.g. api_key)
             max_pages=max_pages,
-            max_depth=max_depth
+            max_depth=max_depth,
+            analyzer_func=analyze_url_for_selectors,
+            parser_func=parse_html_content,
+            writer_func=save_content_as_markdown,
+            analyzer_config=analyzer_config_dict,
+            output_dir=output_dir
         )
         crawler_instance.start_crawling()
 
     except ImportError as e:
-        print(f"Error importing Crawler: {e}. Please ensure src.core.crawler module exists.")
+        print(f"Error importing core components: {e}. Please ensure src.core modules exist and are correct.")
+        sys.exit(1)
+    except ConfigError as e: # Already handled above, but good practice if Crawler init itself could raise it
+        print(f"Configuration error during Crawler initialization: {e}")
+        sys.exit(1)
+    except ValueError as e: # Catch ValueError from Crawler's __init__
+        print(f"Error initializing Crawler: {e}")
+        sys.exit(1)
+    except (AnalyzerError, NetworkError, LLMAnalysisError) as e: # Errors from analyzer if not caught by crawler
+        print(f"Analysis phase error: {e}")
         sys.exit(1)
     except Exception as e:
-        print(f"An error occurred during the crawling process: {e}")
-        # Consider more detailed error logging or specific exception handling here
+        print(f"An unexpected error occurred during the crawling process: {e}")
         sys.exit(1)
 
     print("\n--- d4jules scraping process finished ---")

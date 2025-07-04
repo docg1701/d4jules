@@ -77,27 +77,22 @@ def save_content_as_markdown(
     try:
         markdown_content = h.handle(html_content)
     except Exception as e:
-        # Log error during html2text conversion if a logger was available
-        print(f"Error converting HTML to Markdown for URL {page_url}: {e}")
+        logger.error(f"Error converting HTML to Markdown for URL {page_url}: {e}")
         return None
 
     filename = _generate_filename_from_url(page_url)
     output_path = Path(output_dir)
-    file_path = output_path / filename # Define file_path before try block
+    file_path = output_path / filename
 
     try:
         output_path.mkdir(parents=True, exist_ok=True)
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(markdown_content)
+        logger.debug(f"Markdown content for {page_url} saved to {file_path}")
         return str(file_path)
     except IOError as e:
-        # Log error during file writing if a logger was available
-        # file_path is now defined, so this print is safe.
-        # However, the error 'e' might be from mkdir or open/write.
-        # Consider more specific error handling/messaging if needed in future.
-        print(f"Error during file operation for URL {page_url} (path: {file_path}): {e}")
+        logger.error(f"IOError during file operation for URL {page_url} (path: {file_path}): {e}")
         return None
     except Exception as e:
-        # Catch any other unexpected errors
-        print(f"An unexpected error occurred while saving Markdown for {page_url}: {e}")
+        logger.exception(f"An unexpected error occurred while saving Markdown for {page_url} (path: {file_path}):")
         return None
