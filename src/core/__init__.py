@@ -5,6 +5,13 @@ from .config_loader import load_config, ConfigError
 from .crawler import Crawler
 from .parser import parse_html_content
 from .writer import save_content_as_markdown
+from .analyzer import (
+    analyze_url_for_selectors,
+    HtmlSelectors,
+    AnalyzerError,
+    NetworkError,
+    LLMAnalysisError
+)
 
 # Ensure that LangChainDeprecationWarning is handled or acknowledged if it persists from this level.
 # For now, focusing on structure.
@@ -13,5 +20,10 @@ __all__ = [
     "load_config", "ConfigError",
     "Crawler",
     "parse_html_content",
-    "save_content_as_markdown"
+    "save_content_as_markdown",
+    "analyze_url_for_selectors",
+    "HtmlSelectors",
+    "AnalyzerError",
+    "NetworkError",
+    "LLMAnalysisError"
 ]

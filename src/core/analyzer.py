@@ -1,5 +1,6 @@
 import os
 import requests
+import logging # Added for logging
 from typing import Optional, Dict, Any
 
 from pydantic import BaseModel, Field, field_validator
@@ -51,6 +52,9 @@ class HtmlSelectors(BaseModel):
 
 
 # --- Main Analyzer Function ---
+
+logger = logging.getLogger(__name__)
+
 def analyze_url_for_selectors(url: str, config: Dict[str, Any]) -> HtmlSelectors:
     """
     Analyzes the HTML content of a given URL using an LLM to extract
@@ -178,83 +182,68 @@ if __name__ == '__main__':
         from pathlib import Path # Import Path here, as it's used if this block succeeds
     except ImportError:
         # Fallback for running script directly (e.g. `python src/core/analyzer.py`)
-        # This path is more complex to get right for package structures.
-        # For direct execution, often sys.path manipulation is needed, or running from project root.
-        # This is tricky. For direct execution, you might need to adjust PYTHONPATH.
-        # A simpler way for this demo is to hardcode a test config if load_config fails.
-        print("Could not perform relative import of config_loader. Using placeholder config for demo.")
-        print("Ensure GOOGLE_API_KEY is in your environment or hardcoded for this demo to work.")
+        logger.warning("Could not perform relative import of config_loader. Using placeholder config for demo.")
+        logger.warning("Ensure GOOGLE_API_KEY is in your environment or hardcoded for this demo to work.")
         if not os.getenv("GOOGLE_API_KEY"):
-            print("WARNING: GOOGLE_API_KEY environment variable not set. LLM call will likely fail.")
+            logger.warning("GOOGLE_API_KEY environment variable not set. LLM call will likely fail.")
 
-        # Placeholder config if load_config is not available for this direct run
-        # User needs to ensure GOOGLE_API_KEY is in their environment for this to work
-        # or replace os.getenv("GOOGLE_API_KEY") with their actual key for a quick test.
         test_config = {
             'api_key': os.getenv("GOOGLE_API_KEY", "YOUR_GOOGLE_API_KEY_HERE"),
-            'model_name': 'gemini-1.5-flash-latest' # Or your preferred model
+            'model_name': 'gemini-1.5-flash-latest'
         }
         if test_config['api_key'] == "YOUR_GOOGLE_API_KEY_HERE":
-            print("Please set your GOOGLE_API_KEY in the script or environment to run the demo.")
+            logger.error("Please set your GOOGLE_API_KEY in the script or environment to run the demo.")
             exit(1)
 
     else: # If relative import worked
         try:
-            # Determine path to config.ini relative to this file's location
-            # Assuming project structure: <root>/src/core/analyzer.py and <root>/config/config.ini
             current_dir = Path(__file__).parent.resolve()
             config_file_path = current_dir.parent.parent / "config" / "config.ini"
 
             if not config_file_path.exists():
-                print(f"Config file not found at expected path: {config_file_path}")
-                print("Please ensure config/config.ini exists with your API key.")
-                # Fallback to placeholder config for the demo if file not found
-                test_config = {
+                logger.error(f"Config file not found at expected path: {config_file_path}")
+                logger.error("Please ensure config/config.ini exists with your API key.")
+                test_config = { # Fallback
                     'api_key': os.getenv("GOOGLE_API_KEY", "YOUR_GOOGLE_API_KEY_HERE"),
                     'model_name': 'gemini-1.5-flash-latest'
                 }
                 if test_config['api_key'] == "YOUR_GOOGLE_API_KEY_HERE":
-                    print("Please set your GOOGLE_API_KEY in the script or environment to run the demo.")
+                    logger.error("Please set your GOOGLE_API_KEY in the script or environment to run the demo.")
                     exit(1)
             else:
                 raw_config = load_config(str(config_file_path))
-                # Extract the specific keys needed by analyze_url_for_selectors
                 test_config = {
-                    'api_key': raw_config.get('api_key'), # load_config provides it flat
-                    'model_name': raw_config.get('model_name') # load_config provides it flat
+                    'api_key': raw_config.get('api_key'),
+                    'model_name': raw_config.get('model_name')
                 }
                 if not test_config['api_key'] or not test_config['model_name']:
-                    print("API_KEY or MODEL_NAME missing from loaded config.ini. Check your config file.")
+                    logger.error("API_KEY or MODEL_NAME missing from loaded config.ini. Check your config file.")
                     exit(1)
 
         except ConfigError as e:
-            print(f"Error loading config: {e}")
+            logger.error(f"Error loading config: {e}")
             exit(1)
 
+    test_url_input = input(f"Enter a URL to analyze (e.g., https://docs.python.org/3/library/pathlib.html): ")
+    if not test_url_input:
+        test_url_input = "https://docs.python.org/3/library/pathlib.html"
 
-    # Test URL (use a site that's generally accessible and has clear structure)
-    # Python docs are a good candidate.
-    # test_url = "https://docs.python.org/3/library/pathlib.html"
-    test_url = input(f"Enter a URL to analyze (e.g., https://docs.python.org/3/library/pathlib.html): ")
-    if not test_url:
-        test_url = "https://docs.python.org/3/library/pathlib.html"
-
-
-    print(f"\nAnalyzing URL: {test_url} with model {test_config['model_name']}")
+    logger.info(f"Analyzing URL: {test_url_input} with model {test_config['model_name']}")
 
     try:
-        selectors = analyze_url_for_selectors(test_url, test_config)
-        print("\nSuccessfully extracted selectors:")
-        print(f"  Content Selector: {selectors.content_selector}")
-        print(f"  Navigation Selector: {selectors.navigation_selector}")
-        print(f"  Next Page Selector: {selectors.next_page_selector if selectors.next_page_selector else 'N/A'}")
+        selectors = analyze_url_for_selectors(test_url_input, test_config)
+        logger.info("Successfully extracted selectors:")
+        logger.info(f"  Content Selector: {selectors.content_selector}")
+        logger.info(f"  Navigation Selector: {selectors.navigation_selector}")
+        logger.info(f"  Next Page Selector: {selectors.next_page_selector if selectors.next_page_selector else 'N/A'}")
     except AnalyzerError as e:
-        print(f"\nAnalysis Error: {e}")
+        logger.error(f"Analysis Error: {e}")
     except Exception as e:
-        print(f"\nAn unexpected error occurred: {e}")
+        logger.exception(f"An unexpected error occurred:") # Use logger.exception to include stack trace
 
     # Clean up environment variable if it was set by this script
-    if "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"] == test_config['api_key']:
+    # Consider if this is truly needed or if LangChain handles its own cleanup or if env var should persist
+    if "GOOGLE_API_KEY" in os.environ and os.environ["GOOGLE_API_KEY"] == test_config.get('api_key'):
          # Be cautious if the key was already in the environment from elsewhere
          # For this demo, we assume we set it if it matches test_config.
          # A more robust way would be to store original value and restore.
