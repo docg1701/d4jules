@@ -2,8 +2,9 @@
 # scraper_cli.py
 
 import sys
-import logging # Added for logging
+import logging
 from .core.config_loader import load_config, ConfigError
+from .core.logging_config import setup_logging # Added
 
 # Configure logger for this module
 # Note: Basic config should ideally be done once at the application entry point.
@@ -46,17 +47,9 @@ def main():
     """
     Main entry point for the d4jules scraper CLI application.
     """
-    # --- Basic Logging Configuration ---
-    logging.basicConfig(
-        level=logging.INFO, # Default level, DEBUG provides more verbose output
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.StreamHandler(sys.stdout)] # Log to console
-    )
-    # Re-get the logger for this module after basicConfig is set.
-    # This ensures this module's logger also adheres to the basicConfig.
-    # Or, if other modules are imported after basicConfig, their getLogger will also adhere.
-    global logger
-    logger = logging.getLogger(__name__) # Get a logger specific to this module
+    # --- Setup Structured Logging ---
+    setup_logging() # Initialize logging configuration
+    # Logger instance for this module is already created at the top level
 
     logger.info("--- Welcome to d4jules - Documentation Scraper ---")
 
@@ -132,22 +125,22 @@ def main():
         crawler_instance.start_crawling()
 
     except ImportError as e:
-        print(f"Error importing core components: {e}. Please ensure src.core modules exist and are correct.")
+        logger.critical(f"Error importing core components: {e}. Please ensure src.core modules exist and are correct.", exc_info=True)
         sys.exit(1)
     except ConfigError as e: # Already handled above, but good practice if Crawler init itself could raise it
-        print(f"Configuration error during Crawler initialization: {e}")
+        logger.error(f"Configuration error during Crawler initialization: {e}", exc_info=True)
         sys.exit(1)
     except ValueError as e: # Catch ValueError from Crawler's __init__
-        print(f"Error initializing Crawler: {e}")
+        logger.error(f"Error initializing Crawler: {e}", exc_info=True)
         sys.exit(1)
     except (AnalyzerError, NetworkError, LLMAnalysisError) as e: # Errors from analyzer if not caught by crawler
-        print(f"Analysis phase error: {e}")
+        logger.error(f"Analysis phase error: {e}", exc_info=True)
         sys.exit(1)
     except Exception as e:
-        print(f"An unexpected error occurred during the crawling process: {e}")
+        logger.critical(f"An unexpected error occurred during the crawling process: {e}", exc_info=True)
         sys.exit(1)
 
-    print("\n--- d4jules scraping process finished ---")
+    logger.info("--- d4jules scraping process finished ---")
 
 
 if __name__ == "__main__":

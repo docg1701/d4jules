@@ -65,7 +65,7 @@ fi
 echo "Dependencies installed/updated."
 
 echo "Running d4jules scraper application..."
-python3 src/scraper_cli.py
+python3 -m src.scraper_cli
 # Running the script directly. Ensure PYTHONPATH is set up if imports within scraper_cli fail.
 # Or, if src is meant to be an installable package, `python -m src.scraper_cli` might be used
 # after installation or if PYTHONPATH includes the parent of `src`.

@@ -1,8 +1,11 @@
 import html2text
 import re
+import logging # Added
 from urllib.parse import urlparse
 from pathlib import Path
 from typing import Optional
+
+logger = logging.getLogger(__name__) # Added
 
 def _generate_filename_from_url(page_url: str) -> str:
     """

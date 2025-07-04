@@ -88,21 +88,21 @@ class Crawler:
             return
 
         if self.max_depth is not None and depth > self.max_depth:
-            print(f"DEBUG: URL {normalized_url} at depth {depth} exceeds max_depth {self.max_depth}. Not adding.")
+            logger.debug(f"URL {normalized_url} at depth {depth} exceeds max_depth {self.max_depth}. Not adding.")
             return
 
         if normalized_url not in self.visited_urls and normalized_url not in self._queue_set:
             self.to_visit_queue.append((normalized_url, depth))
             self._queue_set.add(normalized_url)
-            # print(f"DEBUG: Added to queue: {normalized_url} at depth {depth}")
-        # else:
-            # print(f"DEBUG: URL {normalized_url} already visited or in queue. Not adding.")
+            logger.debug(f"Added to queue: {normalized_url} at depth {depth}")
+        else:
+            logger.debug(f"URL {normalized_url} already visited or in queue. Not adding.")
 
 
     def add_urls(self, urls: list[str], current_depth: int):
         new_link_depth = current_depth + 1
         if self.max_depth is not None and new_link_depth > self.max_depth:
-            print(f"DEBUG: Not adding new links from depth {current_depth} because new depth {new_link_depth} would exceed max_depth {self.max_depth}")
+            logger.debug(f"Not adding new links from depth {current_depth} because new depth {new_link_depth} would exceed max_depth {self.max_depth}")
             return
 
         for url in urls:
@@ -156,12 +156,12 @@ class Crawler:
         return parsed_url_to_check.netloc == parsed_base_url.netloc
 
     def start_crawling(self):
-        print(f"Starting crawl for base URL: {self.base_url}")
+        logger.info(f"Starting crawl for base URL: {self.base_url}")
         pages_crawled = 0
 
         while self.has_next_url():
             if self.max_pages is not None and pages_crawled >= self.max_pages:
-                print(f"INFO: Reached max_pages limit of {self.max_pages}. Stopping crawl.")
+                logger.info(f"Reached max_pages limit of {self.max_pages}. Stopping crawl.")
                 break
 
             current_url, current_depth = self.get_next_url()
@@ -171,27 +171,27 @@ class Crawler:
 
             # Redundant check if add_url correctly filters by depth, but good for safety
             if self.max_depth is not None and current_depth > self.max_depth:
-                print(f"DEBUG: Skipping {current_url} at depth {current_depth} (exceeds max_depth {self.max_depth}) - this should ideally not happen if add_url filters correctly.")
+                logger.debug(f"Skipping {current_url} at depth {current_depth} (exceeds max_depth {self.max_depth}) - this should ideally not happen if add_url filters correctly.")
                 continue
 
             if not self.can_crawl_url(current_url):
-                print(f"INFO: Skipping URL (outside base domain or invalid): {current_url}")
+                logger.info(f"Skipping URL (outside base domain or invalid): {current_url}")
                 continue
 
-            print(f"INFO: Processing ({pages_crawled + 1}/{self.max_pages if self.max_pages else 'unlimited'}): {current_url} at depth {current_depth}")
+            logger.info(f"Processing ({pages_crawled + 1}/{self.max_pages if self.max_pages else 'unlimited'}): {current_url} at depth {current_depth}")
 
             # --- 1. Analyze URL for selectors ---
             try:
                 if not self.analyzer_func or self.analyzer_config is None:
-                    print(f"ERROR: Analyzer function or config not set for URL {current_url}. Skipping.")
+                    logger.error(f"Analyzer function or config not set for URL {current_url}. Skipping.")
                     continue
                 selectors = self.analyzer_func(current_url, self.analyzer_config)
-                print(f"DEBUG: Selectors for {current_url}: Content='{selectors.content_selector}', Nav='{selectors.navigation_selector}', Next='{selectors.next_page_selector}'")
+                logger.debug(f"Selectors for {current_url}: Content='{selectors.content_selector}', Nav='{selectors.navigation_selector}', Next='{selectors.next_page_selector}'")
             except (AnalyzerError, NetworkError, LLMAnalysisError) as e:
-                print(f"ERROR: Analyzer phase failed for {current_url}: {e}")
+                logger.error(f"Analyzer phase failed for {current_url}: {e}", exc_info=True)
                 continue
             except Exception as e:
-                print(f"ERROR: Unexpected error during analysis of {current_url}: {e}")
+                logger.error(f"Unexpected error during analysis of {current_url}: {e}", exc_info=True)
                 continue
 
             # --- 2. Fetch HTML content for parser ---
@@ -201,11 +201,11 @@ class Crawler:
                 response.raise_for_status()
                 html_content_for_parser = response.text
             except requests.exceptions.RequestException as e:
-                print(f"ERROR: Failed to fetch HTML for parsing {current_url}: {e}")
+                logger.error(f"Failed to fetch HTML for parsing {current_url}: {e}", exc_info=True)
                 continue
 
             if html_content_for_parser is None: # Should be caught by raise_for_status or RequestException
-                print(f"ERROR: HTML content is None after fetching for {current_url}. Skipping.")
+                logger.error(f"HTML content is None after fetching for {current_url}. Skipping.")
                 continue
 
             # --- 3. Parse HTML for content and links ---
@@ -213,7 +213,7 @@ class Crawler:
             extracted_links: List[str] = []
             try:
                 if not self.parser_func:
-                    print(f"ERROR: Parser function not set for URL {current_url}. Skipping.")
+                    logger.error(f"Parser function not set for URL {current_url}. Skipping.")
                     continue
                 parsed_content_html, extracted_links = self.parser_func(
                     html_content_for_parser,
@@ -222,15 +222,15 @@ class Crawler:
                     selectors.navigation_selector,
                     selectors.next_page_selector
                 )
-                print(f"DEBUG: Parsed {current_url}. Found {len(extracted_links)} links. Content HTML length: {len(parsed_content_html) if parsed_content_html else 0}")
+                logger.debug(f"Parsed {current_url}. Found {len(extracted_links)} links. Content HTML length: {len(parsed_content_html) if parsed_content_html else 0}")
             except Exception as e:
-                print(f"ERROR: Parsing failed for {current_url}: {e}")
+                logger.error(f"Parsing failed for {current_url}: {e}", exc_info=True)
                 continue
 
             # --- 4. Write content to Markdown ---
             try:
                 if not self.writer_func:
-                    print(f"ERROR: Writer function not set for URL {current_url}. Skipping save.")
+                    logger.error(f"Writer function not set for URL {current_url}. Skipping save.")
                 elif parsed_content_html is not None:
                     saved_filepath = self.writer_func(
                         current_url,
@@ -238,24 +238,24 @@ class Crawler:
                         self.output_dir
                     )
                     if saved_filepath:
-                        print(f"INFO: Content from {current_url} saved to {saved_filepath}")
+                        logger.info(f"Content from {current_url} saved to {saved_filepath}")
                     else:
-                        print(f"WARN: Failed to save content for {current_url} (writer returned None).")
+                        logger.warning(f"Failed to save content for {current_url} (writer returned None).")
                 else:
-                    print(f"INFO: No content extracted from {current_url} to save.")
+                    logger.info(f"No content extracted from {current_url} to save.")
             except Exception as e:
-                print(f"ERROR: Writing content failed for {current_url}: {e}")
+                logger.error(f"Writing content failed for {current_url}: {e}", exc_info=True)
 
             # --- 5. Add new valid links to queue ---
             # Only add links if current_depth is less than max_depth (or max_depth is None)
             # This check is now primarily handled by add_urls and add_url.
             if extracted_links:
-                print(f"DEBUG: Adding {len(extracted_links)} new links from {current_url} (depth {current_depth}) to queue.")
+                logger.debug(f"Adding {len(extracted_links)} new links from {current_url} (depth {current_depth}) to queue.")
                 self.add_urls(extracted_links, current_depth)
 
             pages_crawled += 1
-            print(f"INFO: Finished processing {current_url}. Queue size: {self.get_queue_size()}, Visited: {self.get_visited_count()}")
-            print("-" * 30)
+            logger.info(f"Finished processing {current_url}. Queue size: {self.get_queue_size()}, Visited: {self.get_visited_count()}")
+            logger.info("-" * 30)
 
 
-        print(f"Crawling finished. Total pages processed: {pages_crawled}, Total URLs visited: {self.get_visited_count()}")
+        logger.info(f"Crawling finished. Total pages processed: {pages_crawled}, Total URLs visited: {self.get_visited_count()}")
