@@ -122,7 +122,7 @@ except AttributeError: # Caso .text não seja o caminho direto para o JSON
     # No caso de `langchain-google-genai`, ele abstrai isso e retorna o objeto parseado.
     # Com `google-generativeai` puro, o `response.text` é o mais comum para JSON direto.
     print("Não foi possível acessar .text, inspecione o objeto de resposta:", response_json)
-
+```
 **Considerações:**
 *   **`response_mime_type="application/json"`**: Crucial para instruir o modelo a gerar JSON.
 *   **`response_schema`**: Fornece a estrutura esperada. Pode ser uma classe Pydantic, uma `typing.TypedDict`, ou um dicionário representando o JSON Schema. Pydantic é conveniente no Python.
