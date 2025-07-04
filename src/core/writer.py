@@ -38,7 +38,8 @@ def _generate_filename_from_url(page_url: str) -> str:
     MAX_FILENAME_LENGTH = 100 # Reasonble limit
     if len(filename) > MAX_FILENAME_LENGTH:
         name_part, ext_part = Path(filename).stem, Path(filename).suffix
-        name_part = name_part[:MAX_FILENAME_LENGTH - len(ext_part) -1] # -1 for a potential underscore
+        # Truncate name_part so that len(name_part) + len(ext_part) == MAX_FILENAME_LENGTH
+        name_part = name_part[:MAX_FILENAME_LENGTH - len(ext_part)]
         filename = f"{name_part}{ext_part}"
 
     return filename
@@ -82,16 +83,19 @@ def save_content_as_markdown(
 
     filename = _generate_filename_from_url(page_url)
     output_path = Path(output_dir)
+    file_path = output_path / filename # Define file_path before try block
 
     try:
         output_path.mkdir(parents=True, exist_ok=True)
-        file_path = output_path / filename
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(markdown_content)
         return str(file_path)
     except IOError as e:
         # Log error during file writing if a logger was available
-        print(f"Error writing Markdown file for URL {page_url} to {file_path}: {e}")
+        # file_path is now defined, so this print is safe.
+        # However, the error 'e' might be from mkdir or open/write.
+        # Consider more specific error handling/messaging if needed in future.
+        print(f"Error during file operation for URL {page_url} (path: {file_path}): {e}")
         return None
     except Exception as e:
         # Catch any other unexpected errors
